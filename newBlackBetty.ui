@@ -1067,6 +1067,43 @@
                <height>100</height>
               </size>
              </property>
+             <property name="palette">
+              <palette>
+               <active>
+                <colorrole role="Button">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>117</red>
+                   <green>80</green>
+                   <blue>123</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </active>
+               <inactive>
+                <colorrole role="Button">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>117</red>
+                   <green>80</green>
+                   <blue>123</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </inactive>
+               <disabled>
+                <colorrole role="Button">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>117</red>
+                   <green>80</green>
+                   <blue>123</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </disabled>
+              </palette>
+             </property>
              <property name="font">
               <font>
                <pointsize>16</pointsize>
@@ -1099,9 +1136,6 @@
                <weight>75</weight>
                <bold>true</bold>
               </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(117, 80, 123);</string>
              </property>
              <property name="text">
               <string>EXPORT DATA SET</string>
