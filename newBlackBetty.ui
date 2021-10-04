@@ -27,7 +27,6 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(136, 138, 133);
-alternate-background-color: rgb(204, 0, 0);
 color: rgb(0, 0, 0);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -457,6 +456,9 @@ color: rgb(0, 0, 0);</string>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(85, 87, 83);</string>
                </property>
                <property name="text">
                 <string>LOAD CELL CALIBRATION</string>
@@ -958,6 +960,9 @@ color: rgb(0, 0, 0);</string>
              <bold>true</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 87, 83);</string>
+           </property>
            <property name="text">
             <string>JOG DOWN</string>
            </property>
@@ -983,6 +988,9 @@ color: rgb(0, 0, 0);</string>
              <weight>75</weight>
              <bold>true</bold>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 87, 83);</string>
            </property>
            <property name="text">
             <string>JOG UP</string>
@@ -1010,6 +1018,9 @@ color: rgb(0, 0, 0);</string>
              <bold>true</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 87, 83);</string>
+           </property>
            <property name="text">
             <string>HOME</string>
            </property>
@@ -1035,6 +1046,9 @@ color: rgb(0, 0, 0);</string>
              <weight>75</weight>
              <bold>true</bold>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 87, 83);</string>
            </property>
            <property name="text">
             <string>STOP MOTOR</string>
@@ -1079,6 +1093,9 @@ color: rgb(0, 0, 0);</string>
                <bold>true</bold>
               </font>
              </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(85, 87, 83);</string>
+             </property>
              <property name="text">
               <string>TOGGLE DATA RECORDING</string>
              </property>
@@ -1104,6 +1121,9 @@ color: rgb(0, 0, 0);</string>
                <weight>75</weight>
                <bold>true</bold>
               </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(85, 87, 83);</string>
              </property>
              <property name="text">
               <string>EXPORT DATA SET</string>
