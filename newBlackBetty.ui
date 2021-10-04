@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>618</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,10 +24,6 @@
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(136, 138, 133);
-color: rgb(0, 0, 0);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
