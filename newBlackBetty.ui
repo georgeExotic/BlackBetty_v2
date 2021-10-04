@@ -27,6 +27,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(136, 138, 133);
+alternate-background-color: rgb(204, 0, 0);
 color: rgb(0, 0, 0);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
