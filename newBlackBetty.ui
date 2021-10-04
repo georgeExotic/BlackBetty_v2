@@ -25,6 +25,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(138, 226, 52);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -455,10 +458,6 @@
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(117, 80, 123);
-background-color: rgb(115, 210, 22);</string>
                </property>
                <property name="text">
                 <string>LOAD CELL CALIBRATION</string>
@@ -1080,9 +1079,6 @@ background-color: rgb(115, 210, 22);</string>
                <weight>75</weight>
                <bold>true</bold>
               </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(92, 53, 102);</string>
              </property>
              <property name="text">
               <string>TOGGLE DATA RECORDING</string>
