@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1185</width>
+    <width>1024</width>
     <height>618</height>
    </rect>
   </property>
@@ -34,263 +34,11 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_14">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_9">
-      <item>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QFrame" name="frame_7">
-            <property name="frameShape">
-             <enum>QFrame::Panel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>3</number>
-            </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLCDNumber" name="POSITION_MM">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_10">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>60</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>20</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>mm</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <item>
-                <widget class="QLCDNumber" name="POSITION_MICROM">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_9">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>60</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>20</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>μm</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="0" column="0" rowspan="2">
-              <widget class="QLabel" name="label_6">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>300</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>20</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>POSITION READING</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <widget class="QFrame" name="frame_8">
-            <property name="frameShape">
-             <enum>QFrame::Panel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>3</number>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_13">
-             <item row="1" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
-               <item>
-                <widget class="QLCDNumber" name="LAYER_NUMBER">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_11">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>60</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>20</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_8">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>300</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>20</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>LAYER NUMBER</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QFrame" name="frame_2">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QFrame" name="frame_7">
           <property name="frameShape">
            <enum>QFrame::Panel</enum>
           </property>
@@ -300,122 +48,374 @@
           <property name="lineWidth">
            <number>3</number>
           </property>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <item row="0" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QPushButton" name="TOPFLAG_INDICATOR">
-               <property name="minimumSize">
-                <size>
-                 <width>40</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>40</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(204, 0, 0);</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_12">
+              <widget class="QLCDNumber" name="POSITION_MM">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>150</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
                  <height>0</height>
                 </size>
                </property>
                <property name="font">
                 <font>
-                 <pointsize>15</pointsize>
+                 <pointsize>20</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
                <property name="text">
-                <string>TOP FLAG</string>
+                <string>mm</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
             </layout>
            </item>
-           <item row="0" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <item row="1" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
-              <widget class="QPushButton" name="BOTTOMFLAG_INDICATOR">
-               <property name="minimumSize">
-                <size>
-                 <width>40</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>40</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(204, 0, 0);</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_14">
+              <widget class="QLCDNumber" name="POSITION_MICROM">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>150</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
                  <height>0</height>
                 </size>
                </property>
                <property name="font">
                 <font>
-                 <pointsize>15</pointsize>
+                 <pointsize>20</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
                <property name="text">
-                <string>BOTTOM FLAG</string>
+                <string>μm</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item row="0" column="0" rowspan="2">
+            <widget class="QLabel" name="label_6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>20</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>POSITION READING</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
        </layout>
       </item>
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QFrame" name="frame_8">
+          <property name="frameShape">
+           <enum>QFrame::Panel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_13">
+           <item row="1" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_15">
+             <item>
+              <widget class="QLCDNumber" name="LAYER_NUMBER">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_11">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>20</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>20</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>LAYER NUMBER</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QFrame" name="frame_2">
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="lineWidth">
+         <number>3</number>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QPushButton" name="TOPFLAG_INDICATOR">
+             <property name="minimumSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(204, 0, 0);</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>TOP FLAG</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <item>
+            <widget class="QPushButton" name="BOTTOMFLAG_INDICATOR">
+             <property name="minimumSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(204, 0, 0);</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>BOTTOM FLAG</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="5" column="1">
@@ -489,7 +489,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>150</width>
                    <height>50</height>
                   </size>
                  </property>
@@ -530,7 +530,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>40</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -569,7 +569,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>150</width>
                    <height>50</height>
                   </size>
                  </property>
@@ -610,7 +610,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>40</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -714,7 +714,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>150</width>
                    <height>50</height>
                   </size>
                  </property>
@@ -755,7 +755,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>40</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -791,7 +791,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item row="1" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
        <widget class="QFrame" name="frame_6">
@@ -942,7 +942,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>150</width>
              <height>0</height>
             </size>
            </property>
@@ -968,7 +968,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>150</width>
              <height>0</height>
             </size>
            </property>
@@ -994,7 +994,7 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>150</width>
              <height>0</height>
             </size>
            </property>
@@ -1120,7 +1120,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1185</width>
+     <width>1024</width>
      <height>22</height>
     </rect>
    </property>
