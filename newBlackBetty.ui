@@ -459,6 +459,9 @@
                  <bold>true</bold>
                 </font>
                </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(92, 53, 102);</string>
+               </property>
                <property name="text">
                 <string>LOAD CELL CALIBRATION</string>
                </property>
