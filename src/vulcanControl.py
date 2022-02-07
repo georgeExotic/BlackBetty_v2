@@ -1,8 +1,19 @@
-import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP import utils
 from ast import literal_eval #from hex to dec
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+
 import threading
+
+
+class limitSwitch:
+    def __init__(self,limitPin):
+        self.limitPin = limitPin
+        GPIO.setmode(GPIO.BCM)  #set GPIO pind mode to BCM
+        GPIO.setup(self.limitPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        self.updateSwitch()
+    def updateSwitch(self):
+        self.flag = GPIO.input(self.limitPin)
 
 class Motor:
     #Initialization of LMD57
@@ -12,34 +23,26 @@ class Motor:
         self.SERVER_HOST = "192.168.33.1"
         self.SERVER_PORT = 502
         #connection to modbus TCP steps
+        self.connectionStatus = 0
         self._connectModbusClient()
+        self._checkConnection()
         self.lock = threading.Lock()
 
         ###Velocities###
             #Jogging
-        self.joggingInitialVelocity = 10000
-        self.joggingMaxVelocity = 40000
+        self.joggingInitialVelocity = 500
+        self.joggingMaxVelocity = 1000
             #homing
         self.homingInitialVelocity = 10000
         self.homingMaxVelocity = 40000
-            #running
-        self.runningInitialVelocity = 100
-        self.runningMaxVelocity = 1000
-
-        # self.runningInitialVelocity = 1000
-        # self.runningMaxVelocity = 10000
 
         ###accelerations###
             #jogging
-        self.joggingAcceleration = 5000000
-        self.joggingDeacceleration = 5000000
+        self.joggingAcceleration = 50000
+        self.joggingDeacceleration = 500000
             #homing
         self.homingAcceleration = 5000000
         self.homingDeacceleration = 5000000
-            #running
-        self.runningAcceleration = 200000
-        self.runningDeacceleration = 200000
-
 
         ###hmt### motor behaivor
         self.Hmt = 2
@@ -55,15 +58,12 @@ class Motor:
         self.controlBound = 0                           #0x91#best torque performance
         self.microStep = 256.000                            #0x48
 
-
-
         ###hardware Settings
         self.strokeLength = 30 # mm
         self.pistonDiameter = 19.05 #mm
         self.pistonRadius = self.pistonDiameter/2
         self.leadTravel = 4.000 #mm per rev
         self.stepPerRevolution = 200.000 * self.microStep       #200*256 = 51200 steps per rev
-
 
         ###Flags
         self.topLimit = False # Top switch
@@ -117,11 +117,29 @@ class Motor:
 
     ###function to connect to LMD57 using modbus TCP
     def _connectModbusClient(self):
+        #define mosbus server and host
         self._motor = ModbusClient(host = self.SERVER_HOST, port = self.SERVER_PORT, unit_id=1, auto_open=True, debug = False)
-        conn = self._motor.open()
-        if not conn:
-            print('UNABLE TO CONNECT TO {}:{} CHECK CONNECTION TO THE MOTOR'.format(self.SERVER_HOST,self.SERVER_PORT))
+        # self._motor.host(self.SERVER_HOST)
+        # self._motor.port(self.SERVER_PORT)
+        # self._motor.unit_id = 1
+        # self._motor.auto_open = True
+        # self._motor.debug = True
+        self._motor.open()
+        if self._motor.is_open():
+            print("connected to " + self.SERVER_HOST + ":" + str(self.SERVER_PORT))
+        else:
+            print("unable to connect to "+self.SERVER_HOST+ ":" +str(self.SERVER_PORT))
         return
+
+    ###function to check is modbus tcp connection is successful
+    def _checkConnection(self):
+        if not self._motor.is_open():
+            if not self._motor.open():
+                self.connectionStatus = 0
+                self._connectModbusClient()
+                return "unable to connect" #print("unable to connect to motor")
+        self.connectionStatus = 1
+        return self.connectionStatus
 
     def _hex2dec(self,hex):
         hex = str(hex)
@@ -151,7 +169,7 @@ class Motor:
             self.moving = True
         else:
             self.moving = False
-        return
+        return self.moving
 
     ###checks the status of the switches and update flag
     def _checkLimits(self):
@@ -271,9 +289,9 @@ class Motor:
         return
 
     ###move platform +/- 
-    def move(self,displacement):
-        self.setProfiles("running")
+    def move(self,displacement,profile="running"):
         print('move function called')
+        self.setProfiles(profile)
         steps2move = self._mm2steps(displacement)
         print("displacement", displacement, "steps2move = ",steps2move)
         self._writeHoldingRegs(0x46,4,steps2move)
@@ -292,10 +310,18 @@ class Motor:
     #stops with thread looking for homeLimit 
     def home(self):
         if self.running == False and self.homeLimit == False:
-            # self._writeHoldingRegs(0x57,4,0)
+            self._writeHoldingRegs(0x57,4,0)
             print("motor.home running")
             self.setProfiles("homing")
-            self.move(-40)  
+            self.move(-40,"jogging")  
+        return
+
+    def flush(self):
+        if self.running == False and self.topLimit == False:
+            # self._writeHoldingRegs(0x57,4,0)
+            print("motor.flush running")
+            self.setProfiles("homing")
+            self.move(40,"jogging")  
         return
 
     def updatePosition(self):
@@ -334,10 +360,13 @@ class Motor:
         ###First Layer
 
         # self.home()
-        self.move(-40)
+        # self.home()
+        # self.move(-3)
         # print("pop up (1)")
-        input("When top is removed press ENTER to proceed.")
-        self.move(40)
+        # input("When top is removed press ENTER to proceed.")
+        
+        self.flush()
+        # self.move(3)
         # set pos to 0
         input("ready to move down, press ENTER to proceed.")
         self.move(-LB)
