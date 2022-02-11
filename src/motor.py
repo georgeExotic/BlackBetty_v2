@@ -4,8 +4,7 @@ from pyModbusTCP import utils
 
 from ast import literal_eval #from hex to dec
 import threading
-
-from time import sleep
+import time
 
 class Motor:
     def __init__(self):
@@ -190,10 +189,7 @@ class Motor:
         return position_reading
 
 if __name__ == "__main__":
+
     Motor = Motor()
-    Motor.move(5)
-    # Motor._stop()
-    while True:
-        sleep(0.2)
-        print(Motor.updatePosition())
+    Motor.move(2)
 

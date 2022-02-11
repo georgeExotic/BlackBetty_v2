@@ -14,13 +14,13 @@ from hx711 import HX711 #import HX711 class
 class LoadCell():
     def __init__(self):
         GPIO.setmode(GPIO.BCM)  #set GPIO pind mode to BCM
-        
+        GPIO.setwarnings(False)
         self.pd_sckPin=20
         self.dout_pin=21
         self.gain = 128
         self.channel = 'A'
         self.configFileName = 'calibration.vlabs'
-
+        self.calibrationFilePath = '/home/pi/BlackBetty_v2/calibrationFile/calibration.vlabs'
         
         ##Status
         self.calibrated = 0
@@ -33,16 +33,13 @@ class LoadCell():
 
     def _connectLoadCell(self):
         ##HX711 object 
-        self._closeGPIOconnection()
         self.cell = HX711(self.dout_pin,self.pd_sckPin,self.gain,self.channel)
-        self.loadCalibrationFile()
 
     def _closeGPIOconnection(self):
         GPIO.cleanup()
 
     def loadCalibrationFile(self):
         ##checking for previous calibration 
-        self.calibrationFilePath = '/home/pi/BlackBetty_v2/calibrationFile/' + self.configFileName
         if os.path.isfile(self.calibrationFilePath):
             with open(self.calibrationFilePath,'rb') as File:
                 self.cell = pickle.load(File)   #loading calibrated HX711 object
@@ -50,7 +47,14 @@ class LoadCell():
         else: 
             self.calibrated = 0 
 
+    def deleteCalibrationFile(self):
+        if os.path.isfile(self.calibrationFilePath):
+            os.remove(self.calibrationFilePath)
+        else:
+            print("ERROR: {} FILE NOT FOUND".format(self.calibrationFilePath))
+
     def calibrateLoadCell_part1(self):
+        self.deleteCalibrationFile()
         err = self.cell.zero() #set zero offset/ use to tare 
         if err:
             raise Exception('CALIBRATION LOAD CELL PART 1')
@@ -99,10 +103,28 @@ class LoadCell():
 
 if __name__ == "__main__":
     LC = LoadCell()
-    LC.calibrateLoadCell_part1()
-    weight = input("input known weight in KG")
-    LC.calibrateLoadCell_part2(weight)
-    LC.saveCalibrationPICKLE()
+    LC.loadCalibrationFile()
+
+    end_time = time.time() + 5
+
+    while (time.time() < end_time):
+        LC.readForce()
+        time.sleep(0.1)
+
+    user_input = input("input = ")
+    if user_input == "true":
+
+        LC.calibrateLoadCell_part1()
+        weight = input("input known weight in KG")
+        LC.calibrateLoadCell_part2(weight)
+        LC.saveCalibrationPICKLE()
+        LC.loadCalibrationFile()
+
+    else:
+        pass
+
+
+
     while True:
         LC.readForce()
         time.sleep(0.1)

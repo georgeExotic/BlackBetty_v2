@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
@@ -16,7 +17,11 @@ class App(QtWidgets.QMainWindow):
 
         self._connectMotor()
         self._startTHREADS()
-        self._connectLoadCell()
+
+
+        self.LoadCellThread = LoadCellThread()
+        self.LoadCellThread.start()
+        self.LoadCellThread.loadCellReadingSignal.connect(self.updateLoadCellValue)
 
 
         ###BUTTONS###
@@ -33,9 +38,6 @@ class App(QtWidgets.QMainWindow):
 
     def _startTHREADS(self):
         pass
-    
-    def _connectLoadCell(self):
-        self.LoadCell = LoadCell()
 
     ###BUTTON FUNCTIONS###
     def STOP_MOTOR(self):
@@ -52,6 +54,37 @@ class App(QtWidgets.QMainWindow):
         pass
     def LOAD_CELL_CALIBRATION(self):
         pass
+
+    ##WORKERS##
+    def updateLoadCellValue(self,value):
+        value_KG = value
+        value_N = value_KG * 9.8
+        self.FORCE_READING_KG.display(value_KG)
+        self.FORCE_READING_N.display(value_N)
+
+
+class LoadCellThread(QThread):
+
+    loadCellReadingSignal = QtCore.pyqtSignal(float)
+
+    def __init__(self):
+        QThread.__init__(self)
+        self._connectLoadCell()
+
+    def _connectLoadCell(self):
+        self.LoadCell = LoadCell()
+        self.LoadCell.loadCalibrationFile()
+
+    def run(self):
+        while True:
+            self.loadCellReadingSignal.emit(self.LoadCell.readForce())
+            sleep(0.1)
+    def stop(self):
+        self.terminate()
+
+
+
+
 
 def main():
     app = QApplication(sys.argv)
