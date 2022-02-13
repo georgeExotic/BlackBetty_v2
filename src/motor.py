@@ -1,10 +1,11 @@
 ##MODBUS##
+from time import sleep
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP import utils
 
-from ast import literal_eval #from hex to dec
+from ast import Pass, literal_eval #from hex to dec
 import threading
-import time
+
 
 class Motor:
     def __init__(self):
@@ -50,7 +51,7 @@ class Motor:
         self._motor = ModbusClient(host = self.SERVER_HOST, port = self.SERVER_PORT, unit_id=1, auto_open=True, debug = False)
         self._motor.open()
         if self._motor.is_open():
-            print("connected to " + self.SERVER_HOST + ":" + str(self.SERVER_PORT))
+            Pass# print("connected to " + self.SERVER_HOST + ":" + str(self.SERVER_PORT))
         else:
             print("unable to connect to "+self.SERVER_HOST+ ":" +str(self.SERVER_PORT))
         return
@@ -167,15 +168,27 @@ class Motor:
             self._writeHoldingRegs(0x00,4,self.joggingAcceleration)
             self._writeHoldingRegs(0x18,4,self.joggingDeacceleration)
 
-    def move(self,displacement,profile="jogging"):
+    def move(self,displacement_MICRON,profile="jogging"):
         self.setProfiles(profile)
-        steps2move = self._mm2steps(displacement)
+        self.displacement_MM = self._micron2mm(displacement_MICRON)
+        steps2move = self._mm2steps(self.displacement_MM)
         self._writeHoldingRegs(0x46,4,steps2move)
-        print("MOVE COMMAND SENT")
+        # print("MOVE COMMAND SENT")
+
+    def isMoving(self):
+        self.moving = self._readHoldingRegs(0x4A)
+        if self.moving == 1:
+            return True
+        elif self.moving == 0:
+            return False
 
     def stop(self):
         self._writeHoldingRegs(0x46,4,1) # 1 step
-        print("STOP COMMAND SENT")
+        # print("STOP COMMAND SENT")
+
+    def home(self):
+        self._writeHoldingRegs(0x57,4,0)
+        
 
     def updatePosition(self):
         try:
@@ -191,5 +204,8 @@ class Motor:
 if __name__ == "__main__":
 
     Motor = Motor()
-    Motor.move(2)
+    Motor.move(10000)
+    while True:
+        Motor.isMoving()
+        sleep(0.1)
 

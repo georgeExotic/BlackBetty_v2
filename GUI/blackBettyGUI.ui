@@ -50,7 +50,7 @@
          <item row="3" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
-            <widget class="QLineEdit" name="JOG_DOWN_INPUT">
+            <widget class="QLineEdit" name="JOG_DOWN_INPUT_MICRON">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
@@ -112,7 +112,7 @@
          <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QLineEdit" name="JOG_UP_INPUT">
+            <widget class="QLineEdit" name="JOG_UP_INPUT_MICRON">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
@@ -713,7 +713,7 @@
                   <number>3</number>
                  </property>
                  <property name="text">
-                  <string>Pa</string>
+                  <string>KPa</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -759,12 +759,22 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>150</width>
+                 <width>200</width>
                  <height>50</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="digitCount">
+                <number>7</number>
                </property>
               </widget>
              </item>
@@ -800,9 +810,9 @@
             </layout>
            </item>
            <item row="1" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
-              <widget class="QLCDNumber" name="POSITION_MICROM">
+              <widget class="QLCDNumber" name="POSITION_MICRON">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -811,17 +821,27 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>150</width>
+                 <width>200</width>
                  <height>50</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
                </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
                </property>
+               <property name="digitCount">
+                <number>7</number>
+               </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_9">
+              <widget class="QLabel" name="label_17">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -852,7 +872,7 @@
             </layout>
            </item>
            <item row="0" column="0" rowspan="2">
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="label_7">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -873,10 +893,13 @@
               </font>
              </property>
              <property name="text">
-              <string>POSITION READING</string>
+              <string>POSITION</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::PlainText</enum>
              </property>
              <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -911,41 +934,18 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>120</width>
+                 <width>200</width>
                  <height>50</height>
-                </size>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_11">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>0</height>
                 </size>
                </property>
                <property name="font">
                 <font>
-                 <pointsize>20</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
                </property>
               </widget>
              </item>
@@ -1043,7 +1043,7 @@
               </font>
              </property>
              <property name="text">
-              <string>TOP FLAG</string>
+              <string>TOP LIMIT</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1098,7 +1098,7 @@
               </font>
              </property>
              <property name="text">
-              <string>BOTTOM FLAG</string>
+              <string>BOTTOM LIMIT</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

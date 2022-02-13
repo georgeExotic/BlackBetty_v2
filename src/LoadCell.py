@@ -29,9 +29,8 @@ class LoadCell():
         self.ratio = 0
         self.knownWeight = 0 
 
-        self._connectLoadCell()
 
-    def _connectLoadCell(self):
+    def connectLoadCell(self):
         ##HX711 object 
         self.cell = HX711(self.dout_pin,self.pd_sckPin,self.gain,self.channel)
 

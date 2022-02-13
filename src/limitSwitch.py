@@ -16,7 +16,7 @@ class limitSwitch:
         return self.status  #true = on // false = off
 
 if __name__ == "__main__":
-    home_switch = limitSwitch(6)
+    bottom_switch = limitSwitch(6)
     while True:
-        print(home_switch.getSwitchStatus())
+        print(bottom_switch.getSwitchStatus())
         sleep(0.1)
