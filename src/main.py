@@ -17,7 +17,6 @@ class App(QtWidgets.QMainWindow):
         super(App, self).__init__(parent)
         uic.loadUi('/home/pi/BlackBetty_v2/GUI/blackBettyGUI.ui', self)
         self.resize(1024,600)
-
         self._startTHREADS()
 
         
@@ -30,12 +29,13 @@ class App(QtWidgets.QMainWindow):
         self.EXPORT_DATA_BUTTON.clicked.connect(self.EXPORT_DATA)
         self.LOAD_CELL_CALIBRATION_BUTTON.clicked.connect(self.LOAD_CELL_CALIBRATION)
 
-        # self.STOP_MOTOR_BUTTON.setEnabled(False)
-        # self.JUG_UP_BUTTON.setEnabled(False)
-        # self.JOG_DOWN_BUTTON.setEnabled(False)
-        # self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
-        # self.EXPORT_DATA_BUTTON.setEnabled(False)
-        # self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
+        self.STOP_MOTOR_BUTTON.setEnabled(False)
+        self.JUG_UP_BUTTON.setEnabled(False)
+        self.JOG_DOWN_BUTTON.setEnabled(False)
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
+        self.EXPORT_DATA_BUTTON.setEnabled(False)
+        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
+
 
 
     def _startTHREADS(self):
@@ -50,29 +50,35 @@ class App(QtWidgets.QMainWindow):
 
         self.limitSwitchThread = limitSwitchThread()
         self.limitSwitchThread.start()
+        self.limitSwitchThread.topColorSignal.connect(self.updateColorTOP)
+        self.limitSwitchThread.bottomColorSignal.connect(self.updateColorBOTTOM)
 
 
     ###BUTTON FUNCTIONS###
     def STOP_MOTOR(self):
         self.MotorThread.Motor.stop()
+        self.JUG_UP_BUTTON.setEnabled(True)
+        self.JOG_DOWN_BUTTON.setEnabled(True)
+
 
     def HOME(self):
-        self.MotorThread.Motor.move(40,"homing")
-        self.STOP_MOTOR_BUTTON.setEnabled(True)
+        self.homeThread = homeThread(self.limitSwitchThread,self.MotorThread)
+        self.homeThread.start()
         self.JUG_UP_BUTTON.setEnabled(True)
         self.JOG_DOWN_BUTTON.setEnabled(True)
         self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
         self.EXPORT_DATA_BUTTON.setEnabled(True)
         self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(True)
+        self.STOP_MOTOR_BUTTON.setEnabled(True)
 
     def JOG_UP(self):
         distance2JugUp_MICRON = self.JOG_UP_INPUT_MICRON.text()
-        self.jogUpThread = jogUpThread(distance2JugUp_MICRON,self.MotorThread,self.limitSwitchThread)
+        self.jogUpThread = jogUpThread(distance2JugUp_MICRON,self.MotorThread,self.limitSwitchThread,self.JUG_UP_BUTTON,self.JOG_DOWN_BUTTON)
         self.jogUpThread.start()
 
     def JOG_DOWN(self):
         distance2JugDown_MICRON = self.JOG_DOWN_INPUT_MICRON.text()
-        self.jogDownThread = jogDownThread(distance2JugDown_MICRON,self.MotorThread)
+        self.jogDownThread = jogDownThread(distance2JugDown_MICRON,self.MotorThread,self.limitSwitchThread,self.JOG_DOWN_BUTTON,self.JUG_UP_BUTTON)
         self.jogDownThread.start()
 
     def TOGGLE_DATA_RECORDING(self):
@@ -103,6 +109,18 @@ class App(QtWidgets.QMainWindow):
         self.POSITION_MM.display(self.positionReading_mm)
         self.POSITION_MICRON.display(self.pistionReading_micron)
 
+    def updateColorTOP(self,color):
+        if color == True:
+            self.topLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
+        else:
+            self.topLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
+    
+    def updateColorBOTTOM(self,color):
+        if color == True:
+            self.bottomLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
+        else:
+            self.bottomLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
+            
 class LoadCellThread(QThread):
 
     loadCellReadingSignal = QtCore.pyqtSignal(float)
@@ -110,6 +128,7 @@ class LoadCellThread(QThread):
     def __init__(self):
         QThread.__init__(self)
         self._connectLoadCell()
+
 
     def _connectLoadCell(self):
         self.LoadCell = LoadCell()
@@ -144,37 +163,83 @@ class MotorThread(QThread):
     def stop(self):
         self.terminate()
 
+class homeThread(QThread):
+
+    def __init__(self,limitSwitchThread,MotorThread):
+        QThread.__init__(self)
+        self.limitSwitchThread = limitSwitchThread
+        self.MotorThread = MotorThread
+
+    def run(self):
+        if self.limitSwitchThread.isTop == True:
+            self.MotorThread.Motor.home()
+
+        elif self.limitSwitchThread.isTop == False:
+            self.MotorThread.Motor.move(40000)
+       
+            while self.MotorThread.Motor.isMoving() == True:
+                if self.limitSwitchThread.isTop == True:
+                    self.MotorThread.Motor.stop()
+                    sleep(0.05)
+                    self.MotorThread.Motor.home()
+                    break   
+
 class jogUpThread(QThread):
 
-    def __init__(self,distance2JugUp_MICRON,MotorThread,limitSwitchThread):
+    def __init__(self,distance2JugUp_MICRON,MotorThread,limitSwitchThread,JUG_UP_BUTTON,JOG_DOWN_BUTTON):
         QThread.__init__(self)
         self.distance2JugUp_MICRON = distance2JugUp_MICRON
         self.MotorThread = MotorThread
         self.limitSwitchThread = limitSwitchThread
+        self.JUG_UP_BUTTON = JUG_UP_BUTTON
+        self.JOG_DOWN_BUTTON = JOG_DOWN_BUTTON
         
     def run(self):
-        self.MotorThread.Motor.move(int(self.distance2JugUp_MICRON))
-        while True:
-            if self.MotorThread.Motor.isMoving():
-                print("MOVING")
-            else:
-                print("NOT MOVING")
+        self.JUG_UP_BUTTON.setEnabled(False)
+        self.JOG_DOWN_BUTTON.setEnabled(False)
 
-            # if self.limitSwitchThread.isTop == True:
-            # elif self.limitSwitchThread.isTop == False:
+        if self.limitSwitchThread.isTop == True:
+            pass
+        elif self.limitSwitchThread.isTop == False:
+            self.MotorThread.Motor.move(int(self.distance2JugUp_MICRON))
+
+            while self.MotorThread.Motor.isMoving() == True:
+                if self.limitSwitchThread.isTop == True:
+                    self.MotorThread.Motor.stop()
+                    break
+        self.JUG_UP_BUTTON.setEnabled(True)
+        self.JOG_DOWN_BUTTON.setEnabled(True)
 
 
 class jogDownThread(QThread):
 
-    def __init__(self,distance2JugDown_MICRON,MotorThread):
+    def __init__(self,distance2JugDown_MICRON,MotorThread,limitSwitchThread,JOG_DOWN_BUTTON,JUG_UP_BUTTON):
         QThread.__init__(self)
         self.distance2JugDown_MICRON = distance2JugDown_MICRON
         self.MotorThread = MotorThread
+        self.limitSwitchThread = limitSwitchThread
+        self.JOG_DOWN_BUTTON = JOG_DOWN_BUTTON
+        self.JUG_UP_BUTTON = JUG_UP_BUTTON
     def run(self):
-        self.MotorThread.Motor.move(-1*int(self.distance2JugDown_MICRON))
+        self.JOG_DOWN_BUTTON.setEnabled(False)
+        self.JUG_UP_BUTTON.setEnabled(False)
+
+        if self.limitSwitchThread.isBottom == True:
+            pass
+        elif self.limitSwitchThread.isBottom == False:
+            self.MotorThread.Motor.move(-1*int(self.distance2JugDown_MICRON))
+
+            while self.MotorThread.Motor.isMoving() == True:
+                if self.limitSwitchThread.isBottom == True:
+                    self.MotorThread.Motor.stop()
+                    break
+        self.JOG_DOWN_BUTTON.setEnabled(True)
+        self.JUG_UP_BUTTON.setEnabled(True)
+
 
 class limitSwitchThread(QThread):
-
+    topColorSignal = QtCore.pyqtSignal(bool)
+    bottomColorSignal = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         QThread.__init__(self)
@@ -183,16 +248,23 @@ class limitSwitchThread(QThread):
         self.isTop = False
         self.isBottom = False 
 
+
     def checkLimits(self):
         if self.topLimit.getSwitchStatus() == True:
             self.isTop = True
+            self.topColorSignal.emit(True)
         elif self.topLimit.getSwitchStatus() == False:
             self.isTop = False
+            self.topColorSignal.emit(False)
 
         if self.bottomLimit.getSwitchStatus() == True:
             self.isBottom = True
+            self.bottomColorSignal.emit(True)
+            
         elif self.bottomLimit.getSwitchStatus() == False:
             self.isBottom = False
+            self.bottomColorSignal.emit(False)
+
 
     def run(self):
         while True:
