@@ -1,5 +1,7 @@
+from cProfile import run
 import sys
 import math
+import csv
 from time import sleep
 from xmlrpc.client import boolean
 from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog
@@ -15,10 +17,10 @@ class App(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
 
         super(App, self).__init__(parent)
-        uic.loadUi('/home/pi/BlackBetty_v2/GUI/blackBettyGUI.ui', self)
+        self.gui = uic.loadUi('/home/pi/BlackBetty_v2/GUI/blackBettyGUI.ui', self)
         self.resize(1024,600)
         self._startTHREADS()
-
+        self.firstLoop = True
         
         ###BUTTONS###
         self.STOP_MOTOR_BUTTON.clicked.connect(self.STOP_MOTOR)
@@ -26,17 +28,9 @@ class App(QtWidgets.QMainWindow):
         self.JUG_UP_BUTTON.clicked.connect(self.JOG_UP)
         self.JOG_DOWN_BUTTON.clicked.connect(self.JOG_DOWN)
         self.TOGGLE_DATA_RECORDING_BUTTON.clicked.connect(self.TOGGLE_DATA_RECORDING)
-        self.EXPORT_DATA_BUTTON.clicked.connect(self.EXPORT_DATA)
         self.LOAD_CELL_CALIBRATION_BUTTON.clicked.connect(self.LOAD_CELL_CALIBRATION)
 
-        self.STOP_MOTOR_BUTTON.setEnabled(False)
-        self.JUG_UP_BUTTON.setEnabled(False)
-        self.JOG_DOWN_BUTTON.setEnabled(False)
-        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
-        self.EXPORT_DATA_BUTTON.setEnabled(False)
-        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
-
-
+        self.turnOffButtons()
 
     def _startTHREADS(self):
         ##PUT THREADS HERE##
@@ -50,9 +44,8 @@ class App(QtWidgets.QMainWindow):
 
         self.limitSwitchThread = limitSwitchThread()
         self.limitSwitchThread.start()
-        self.limitSwitchThread.topColorSignal.connect(self.updateColorTOP)
-        self.limitSwitchThread.bottomColorSignal.connect(self.updateColorBOTTOM)
-
+        self.limitSwitchThread.topLimitIndicatorSignal.connect(self.updateColorTop)
+        self.limitSwitchThread.bottomLimitIndicatorSignal.connect(self.updateColorBottom)
 
     ###BUTTON FUNCTIONS###
     def STOP_MOTOR(self):
@@ -64,12 +57,8 @@ class App(QtWidgets.QMainWindow):
     def HOME(self):
         self.homeThread = homeThread(self.limitSwitchThread,self.MotorThread)
         self.homeThread.start()
-        self.JUG_UP_BUTTON.setEnabled(True)
-        self.JOG_DOWN_BUTTON.setEnabled(True)
-        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
-        self.EXPORT_DATA_BUTTON.setEnabled(True)
-        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(True)
-        self.STOP_MOTOR_BUTTON.setEnabled(True)
+        self.turnOnButtons()
+
 
     def JOG_UP(self):
         distance2JugUp_MICRON = self.JOG_UP_INPUT_MICRON.text()
@@ -82,11 +71,38 @@ class App(QtWidgets.QMainWindow):
         self.jogDownThread.start()
 
     def TOGGLE_DATA_RECORDING(self):
-        pass
-    def EXPORT_DATA(self):
-        pass
+        self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread)
+        if self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
+            self.dataRecordingThread.start()
+        elif not self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
+            self.dataRecordingThread.stop()
+
     def LOAD_CELL_CALIBRATION(self):
+
         pass
+
+
+    def turnOnButtons(self):
+
+        self.JUG_UP_BUTTON.setEnabled(True)
+        self.JOG_DOWN_BUTTON.setEnabled(True)
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
+        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(True)
+        self.STOP_MOTOR_BUTTON.setEnabled(True)
+        self.HOME_BUTTON.setEnabled(True)
+    
+    def turnOffButtons(self):
+        
+        if not self.firstLoop:
+            self.HOME_BUTTON.setEnabled(False)
+        self.JUG_UP_BUTTON.setEnabled(False)
+        self.JOG_DOWN_BUTTON.setEnabled(False)
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
+        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
+        self.STOP_MOTOR_BUTTON.setEnabled(False)
+        
+        self.firstLoop = False
+
 
     ##WORKERS##
     def updateLoadCellValue(self,loadCellValue_KG):
@@ -109,18 +125,20 @@ class App(QtWidgets.QMainWindow):
         self.POSITION_MM.display(self.positionReading_mm)
         self.POSITION_MICRON.display(self.pistionReading_micron)
 
-    def updateColorTOP(self,color):
-        if color == True:
-            self.topLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
-        else:
-            self.topLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
     
-    def updateColorBOTTOM(self,color):
-        if color == True:
+    def updateColorBottom(self,state):
+        if state:
             self.bottomLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
         else:
             self.bottomLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
             
+    def updateColorTop(self,state):
+        if state:
+            self.topLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
+        else:
+            self.topLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
+
+
 class LoadCellThread(QThread):
 
     loadCellReadingSignal = QtCore.pyqtSignal(float)
@@ -173,14 +191,13 @@ class homeThread(QThread):
     def run(self):
         if self.limitSwitchThread.isTop == True:
             self.MotorThread.Motor.home()
-
         elif self.limitSwitchThread.isTop == False:
             self.MotorThread.Motor.move(40000)
        
             while self.MotorThread.Motor.isMoving() == True:
                 if self.limitSwitchThread.isTop == True:
                     self.MotorThread.Motor.stop()
-                    sleep(0.05)
+                    sleep(0.2)
                     self.MotorThread.Motor.home()
                     break   
 
@@ -210,7 +227,6 @@ class jogUpThread(QThread):
         self.JUG_UP_BUTTON.setEnabled(True)
         self.JOG_DOWN_BUTTON.setEnabled(True)
 
-
 class jogDownThread(QThread):
 
     def __init__(self,distance2JugDown_MICRON,MotorThread,limitSwitchThread,JOG_DOWN_BUTTON,JUG_UP_BUTTON):
@@ -236,10 +252,10 @@ class jogDownThread(QThread):
         self.JOG_DOWN_BUTTON.setEnabled(True)
         self.JUG_UP_BUTTON.setEnabled(True)
 
-
 class limitSwitchThread(QThread):
-    topColorSignal = QtCore.pyqtSignal(bool)
-    bottomColorSignal = QtCore.pyqtSignal(bool)
+
+    topLimitIndicatorSignal = QtCore.pyqtSignal(bool)
+    bottomLimitIndicatorSignal = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         QThread.__init__(self)
@@ -252,25 +268,46 @@ class limitSwitchThread(QThread):
     def checkLimits(self):
         if self.topLimit.getSwitchStatus() == True:
             self.isTop = True
-            self.topColorSignal.emit(True)
+            self.topLimitIndicatorSignal.emit(True)
         elif self.topLimit.getSwitchStatus() == False:
             self.isTop = False
-            self.topColorSignal.emit(False)
+            self.topLimitIndicatorSignal.emit(False)
 
         if self.bottomLimit.getSwitchStatus() == True:
             self.isBottom = True
-            self.bottomColorSignal.emit(True)
-            
+            self.bottomLimitIndicatorSignal.emit(True)
         elif self.bottomLimit.getSwitchStatus() == False:
             self.isBottom = False
-            self.bottomColorSignal.emit(False)
-
+            self.bottomLimitIndicatorSignal.emit(False)
 
     def run(self):
         while True:
             self.checkLimits()
             sleep(0.1)
 
+class dataRecordingThread(QThread):
+    def __init__(self,MotorThread,LoadCellThread):
+        QThread.__init__(self)
+        self.MotorThread = MotorThread
+        self.LoadCellThread = LoadCellThread
+        self.filePathBase = '/home/pi/Desktop'
+        self.path = self.filePathBase + '/testCSV.csv'
+        self.number = 1
+        fileExample = open(self.path,'w')
+        self.csvWriter = csv.writer(fileExample)
+        self.csvWriter.writerow(['sample', 'LOAD', 'position'])
+    
+    def addLine(self):
+        self.csvWriter.writerow([self.number,self.LoadCellThread.loadCellReading,self.MotorThread.motorPositionReading])
+        while True:
+            sleep(0.2)
+
+    def run(self):
+        self.addLine()    
+
+    def stop(self):
+        print("done")
+        self.terminate()
 
 def main():
     app = QApplication(sys.argv)
