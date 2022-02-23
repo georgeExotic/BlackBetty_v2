@@ -1,4 +1,3 @@
-from cProfile import run
 import sys
 import math
 import csv
@@ -71,11 +70,11 @@ class App(QtWidgets.QMainWindow):
         self.jogDownThread.start()
 
     def TOGGLE_DATA_RECORDING(self):
-        self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread)
+        self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread,self.TOGGLE_DATA_RECORDING_BUTTON)
         if self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
             self.dataRecordingThread.start()
-        elif not self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
-            self.dataRecordingThread.stop()
+        # elif not self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
+        #     self.dataRecordingThread.stop()
 
     def LOAD_CELL_CALIBRATION(self):
 
@@ -121,9 +120,9 @@ class App(QtWidgets.QMainWindow):
     
     def updatePositionReading(self,positionReading):
         self.positionReading_mm = round(positionReading,6)
-        self.pistionReading_micron = self.positionReading_mm * 1000
+        self.positionReading_micron = self.positionReading_mm * 1000
         self.POSITION_MM.display(self.positionReading_mm)
-        self.POSITION_MICRON.display(self.pistionReading_micron)
+        self.POSITION_MICRON.display(self.positionReading_micron)
 
     
     def updateColorBottom(self,state):
@@ -197,7 +196,7 @@ class homeThread(QThread):
             while self.MotorThread.Motor.isMoving() == True:
                 if self.limitSwitchThread.isTop == True:
                     self.MotorThread.Motor.stop()
-                    sleep(0.2)
+                    sleep(0.1)
                     self.MotorThread.Motor.home()
                     break   
 
@@ -286,28 +285,29 @@ class limitSwitchThread(QThread):
             sleep(0.1)
 
 class dataRecordingThread(QThread):
-    def __init__(self,MotorThread,LoadCellThread):
+    def __init__(self,MotorThread,LoadCellThread,TOGGLE_DATA_RECORDING_BUTTON):
         QThread.__init__(self)
         self.MotorThread = MotorThread
         self.LoadCellThread = LoadCellThread
-        self.filePathBase = '/home/pi/Desktop'
-        self.path = self.filePathBase + '/testCSV.csv'
-        self.number = 1
-        fileExample = open(self.path,'w')
-        self.csvWriter = csv.writer(fileExample)
-        self.csvWriter.writerow(['sample', 'LOAD', 'position'])
-    
-    def addLine(self):
-        self.csvWriter.writerow([self.number,self.LoadCellThread.loadCellReading,self.MotorThread.motorPositionReading])
-        while True:
-            sleep(0.2)
+        self.TOGGLE_DATA_RECORDING_BUTTON = TOGGLE_DATA_RECORDING_BUTTON
+
+        filePath = '/home/pi/Desktop/csvTest.csv'
+        self.csvFile = open(filePath,'w')
+        self.csvFileWriter = csv.writer(self.csvFile)
+
+
 
     def run(self):
-        self.addLine()    
+        i=1
+        # with open(filePath,'w') as self.csvFile:
+        #     csvFileWriter = csv.writer(self.csvFile)
+        self.csvFileWriter.writerow(['i','POSITION','LOAD'])
+        while self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
+            self.csvFileWriter.writerow([i,self.MotorThread.motorPositionReading,self.LoadCellThread.loadCellReading])
+            i+=1
+            sleep(0.1)
 
-    def stop(self):
-        print("done")
-        self.terminate()
+
 
 def main():
     app = QApplication(sys.argv)

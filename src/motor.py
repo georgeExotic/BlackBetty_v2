@@ -204,7 +204,7 @@ class Motor:
 if __name__ == "__main__":
 
     Motor = Motor()
-    Motor.move(10000)
+    Motor.move(-10000)
     while True:
         Motor.isMoving()
         sleep(0.1)
