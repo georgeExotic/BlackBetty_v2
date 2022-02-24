@@ -319,31 +319,8 @@
              <property name="text">
               <string>TOGGLE DATA RECORDING</string>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="EXPORT_DATA_BUTTON">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>300</width>
-               <height>100</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>16</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>EXPORT DATA SET</string>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
