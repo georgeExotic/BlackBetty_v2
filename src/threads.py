@@ -3,9 +3,9 @@ import random
 import csv
 from PyQt5.QtCore import QThread, pyqtSignal
 
-# from motor import Motor
-# from LoadCell import LoadCell
-# from limitSwitch import limitSwitch
+from motor import Motor
+from LoadCell import LoadCell
+from limitSwitch import limitSwitch
 
 
 class LoadCellThread(QThread):
@@ -14,19 +14,18 @@ class LoadCellThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        # self._connectLoadCell()
+        self._connectLoadCell()
 
 
     def _connectLoadCell(self):
-        # self.LoadCell = LoadCell()
-        # self.LoadCell.connectLoadCell()
-        # self.LoadCell.loadCalibrationFile()
-        pass
+        self.LoadCell = LoadCell()
+        self.LoadCell.connectLoadCell()
+        self.LoadCell.loadCalibrationFile()
 
     def run(self):
         while True:
-            # self.loadCellReading = self.LoadCell.readForce()
-            self.loadCellReading = random.randint(0,50000)
+            self.loadCellReading = self.LoadCell.readForce()
+            # self.loadCellReading = random.randint(0,50000)
             self.loadCellReadingSignal.emit(self.loadCellReading)
             sleep(0.1)
 
@@ -37,16 +36,15 @@ class MotorThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        # self._connectMotor()
+        self._connectMotor()
 
     def _connectMotor(self):
-        # self.Motor = Motor()
-        pass
+        self.Motor = Motor()
 
     def run(self):
         while True:
-            # self.motorPositionReading = self.Motor.updatePosition()
-            self.motorPositionReading = random.randint(0,30000)
+            self.motorPositionReading = self.Motor.updatePosition()
+            # self.motorPositionReading = random.randint(0,30000)
             self.motorPositionReadingSignal.emit(self.motorPositionReading)
             sleep(0.1)
 
@@ -167,10 +165,7 @@ class dataRecordingThread(QThread):
 
         self.positionReading_micron = 0
         self.updateLoadCellReading = 0
-
-        filePath = './csvTest.csv'
-        self.csvFile = open(filePath,'w')
-        self.csvFileWriter = csv.writer(self.csvFile)
+        
 
     def updatePositionReading(self,positionReading):
         self.positionReading_micron = positionReading
@@ -178,13 +173,30 @@ class dataRecordingThread(QThread):
     def updateLoadCellReading(self,loadCellReading):
         self.updateLoadCellReading = loadCellReading
 
+    def openFile(self,filename):
+        try:
+            self.filename = filename
+            self.csvFile = open(self.filename, 'w')
+            self.csvFileWriter = csv.writer(self.csvFile)
+            self.csvFileWriter.writerow(['SAMPLE NUMBER','POSITION','LOAD'])#units?
+        except:
+            return False
+        return True
+
+    def closeFile(self):
+        try:
+            self.csvFile.close()
+        except:
+            return False
+        return True
+
     def run(self):
-        i=1
-        self.csvFileWriter.writerow(['i','POSITION','LOAD'])
-        while i<10:
-            self.csvFileWriter.writerow([i,self.positionReading_micron,self.updateLoadCellReading])
-            i+=1
-            sleep(0.1)
-        self.csvFile.close()
+        i=0
+        if self.openFile('/home/pi/Desktop/BLACKBETTY RESULTS/csvTest.csv'):
+            while i<10:
+                self.csvFileWriter.writerow([i,self.positionReading_micron,self.updateLoadCellReading])
+                i+=1
+                sleep(0.1)
+        self.closeFile()
         self.TOGGLE_DATA_RECORDING_BUTTON.toggle()
         print("done")

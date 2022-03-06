@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets, uic
 from threads import (LoadCellThread,
                     MotorThread,
+                    limitSwitchThread,
                     homeThread,
                     jogUpThread,
                     jogDownThread,
@@ -46,8 +47,8 @@ class App(QMainWindow):
         self.MotorThread.start()
         self.MotorThread.motorPositionReadingSignal.connect(self.updatePositionReading)
 
-        # self.limitSwitchThread = limitSwitchThread()
-        # self.limitSwitchThread.start()
+        self.limitSwitchThread = limitSwitchThread()
+        self.limitSwitchThread.start()
 
 
     ###BUTTON FUNCTIONS###
@@ -73,9 +74,6 @@ class App(QMainWindow):
 
     def TOGGLE_DATA_RECORDING(self):
         self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread,self.TOGGLE_DATA_RECORDING_BUTTON)
-        
-        self.TOPFLAG_INDICATOR.setStyleSheet("background-color:yellow")
-
         if self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
             self.dataRecordingThread.start()
 
