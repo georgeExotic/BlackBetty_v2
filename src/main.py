@@ -1,7 +1,6 @@
 import sys
 import math
-from time import sleep
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets, uic
 from threads import (LoadCellThread,
                     MotorThread,
@@ -11,25 +10,32 @@ from threads import (LoadCellThread,
                     dataRecordingThread)
 
 
-class App(QtWidgets.QMainWindow):
+class App(QMainWindow):
     def __init__(self, parent=None):
 
         super(App, self).__init__(parent)
         self.gui = uic.loadUi('../GUI/blackBettyGUI.ui', self)
         self.resize(1024,600)
         self._startTHREADS()
-        self.firstLoop = True
-        
+        self.turnButtonsOFF()
+
         ###BUTTONS###
-        # self.STOP_MOTOR_BUTTON.clicked.connect(self.STOP_MOTOR)
-        # self.HOME_BUTTON.clicked.connect(self.HOME)
-        # self.JUG_UP_BUTTON.clicked.connect(self.JOG_UP)
-        # self.JOG_DOWN_BUTTON.clicked.connect(self.JOG_DOWN)
+        self.STOP_MOTOR_BUTTON.clicked.connect(self.STOP_MOTOR)
+        self.HOME_BUTTON.clicked.connect(self.HOME)
+        self.JUG_UP_BUTTON.clicked.connect(self.JOG_UP)
+        self.JOG_DOWN_BUTTON.clicked.connect(self.JOG_DOWN)
         self.TOGGLE_DATA_RECORDING_BUTTON.clicked.connect(self.TOGGLE_DATA_RECORDING)
-        # self.LOAD_CELL_CALIBRATION_BUTTON.clicked.connect(self.LOAD_CELL_CALIBRATION)
 
-        # self.turnOffButtons()
+    def turnButtonsOFF(self):
+        self.STOP_MOTOR_BUTTON.setEnabled(False)
+        self.JUG_UP_BUTTON.setEnabled(False)
+        self.JOG_DOWN_BUTTON.setEnabled(False)
 
+    def turnButtonsON(self):
+        self.STOP_MOTOR_BUTTON.setEnabled(True)
+        self.JUG_UP_BUTTON.setEnabled(True)
+        self.JOG_DOWN_BUTTON.setEnabled(True)
+        
     def _startTHREADS(self):
         ##PUT THREADS HERE##
         self.LoadCellThread = LoadCellThread()
@@ -42,8 +48,6 @@ class App(QtWidgets.QMainWindow):
 
         # self.limitSwitchThread = limitSwitchThread()
         # self.limitSwitchThread.start()
-        # self.limitSwitchThread.topLimitIndicatorSignal.connect(self.updateColorTop)
-        # self.limitSwitchThread.bottomLimitIndicatorSignal.connect(self.updateColorBottom)
 
 
     ###BUTTON FUNCTIONS###
@@ -52,12 +56,10 @@ class App(QtWidgets.QMainWindow):
         self.JUG_UP_BUTTON.setEnabled(True)
         self.JOG_DOWN_BUTTON.setEnabled(True)
 
-
     def HOME(self):
         self.homeThread = homeThread(self.limitSwitchThread,self.MotorThread)
         self.homeThread.start()
-        self.turnOnButtons()
-
+        self.turnButtonsON()
 
     def JOG_UP(self):
         distance2JugUp_MICRON = self.JOG_UP_INPUT_MICRON.text()
@@ -71,74 +73,37 @@ class App(QtWidgets.QMainWindow):
 
     def TOGGLE_DATA_RECORDING(self):
         self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread,self.TOGGLE_DATA_RECORDING_BUTTON)
+        
+        self.TOPFLAG_INDICATOR.setStyleSheet("background-color:yellow")
+
         if self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
             self.dataRecordingThread.start()
 
-
+    
     def LOAD_CELL_CALIBRATION(self):
-
         pass
 
 
-    def turnOnButtons(self):
-
-        self.JUG_UP_BUTTON.setEnabled(True)
-        self.JOG_DOWN_BUTTON.setEnabled(True)
-        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
-        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(True)
-        self.STOP_MOTOR_BUTTON.setEnabled(True)
-        self.HOME_BUTTON.setEnabled(True)
-    
-    def turnOffButtons(self):
-        
-        if not self.firstLoop:
-            self.HOME_BUTTON.setEnabled(False)
-        self.JUG_UP_BUTTON.setEnabled(False)
-        self.JOG_DOWN_BUTTON.setEnabled(False)
-        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
-        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
-        self.STOP_MOTOR_BUTTON.setEnabled(False)
-        
-        self.firstLoop = False
-
-
-    ##WORKERS##
+    ###WORKERS###
     def updateLoadCellValue(self,loadCellValue_KG):
-        loadCellValue_KG = round(loadCellValue_KG,3)
-        value_N = round(loadCellValue_KG * 9.8,3)
+        self.loadCellValue_KG = round(loadCellValue_KG,3)
+        self.value_N = round(loadCellValue_KG * 9.8,3)
         ###pressure###
-        pistonDiameter = 19.05
-        pistonRadius = pistonDiameter/2
-        pistonradius_meters = pistonRadius/1000
-        pistonArea = math.pi*math.pow(pistonradius_meters,2)
-        pressureReading_KPA = round(((value_N)/(pistonArea)/1000),3)
+        self.pistonDiameter = 19.05
+        self.pistonRadius = self.pistonDiameter/2
+        self.pistonradius_meters = self.pistonRadius/1000
+        self.pistonArea = math.pi*math.pow(self.pistonradius_meters,2)
+        self.pressureReading_KPA = round(((self.value_N)/(self.pistonArea)/1000),3)
 
-        self.FORCE_READING_KG.display(loadCellValue_KG)
-        self.FORCE_READING_N.display(value_N)
-        self.PRESSURE_READING_PA.display(pressureReading_KPA)
+        self.FORCE_READING_KG.display(self.loadCellValue_KG)
+        self.FORCE_READING_N.display(self.value_N)
+        self.PRESSURE_READING_PA.display(self.pressureReading_KPA)
     
     def updatePositionReading(self,positionReading):
         self.positionReading_mm = round(positionReading,6)
         self.positionReading_micron = self.positionReading_mm * 1000
         self.POSITION_MM.display(self.positionReading_mm)
         self.POSITION_MICRON.display(self.positionReading_micron)
-
-    
-    def updateColorBottom(self,state):
-        if state:
-            self.bottomLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
-        else:
-            self.bottomLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
-            
-    def updateColorTop(self,state):
-        if state:
-            self.topLimitIndicator.setStyleSheet("background-color: rgb(0, 255, 0);")
-        else:
-            self.topLimitIndicator.setStyleSheet("background-color: rgb(255, 0, 0);")
-
-
-
-
 
 
 def main():

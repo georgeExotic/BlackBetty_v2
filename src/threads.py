@@ -29,8 +29,7 @@ class LoadCellThread(QThread):
             self.loadCellReading = random.randint(0,50000)
             self.loadCellReadingSignal.emit(self.loadCellReading)
             sleep(0.1)
-    def stop(self):
-        self.terminate()
+
 
 class MotorThread(QThread):
 
@@ -51,8 +50,6 @@ class MotorThread(QThread):
             self.motorPositionReadingSignal.emit(self.motorPositionReading)
             sleep(0.1)
 
-    def stop(self):
-        self.terminate()
 
 class homeThread(QThread):
 
@@ -159,24 +156,35 @@ class limitSwitchThread(QThread):
             sleep(0.1)
 
 class dataRecordingThread(QThread):
+
     def __init__(self,MotorThread,LoadCellThread,TOGGLE_DATA_RECORDING_BUTTON):
         QThread.__init__(self)
         self.MotorThread = MotorThread
+        self.MotorThread.motorPositionReadingSignal.connect(self.updatePositionReading)
         self.LoadCellThread = LoadCellThread
+        self.LoadCellThread.loadCellReadingSignal.connect(self.updateLoadCellReading)
         self.TOGGLE_DATA_RECORDING_BUTTON = TOGGLE_DATA_RECORDING_BUTTON
 
-        filePath = '../csvTest.csv'
+        self.positionReading_micron = 0
+        self.updateLoadCellReading = 0
+
+        filePath = './csvTest.csv'
         self.csvFile = open(filePath,'w')
         self.csvFileWriter = csv.writer(self.csvFile)
 
+    def updatePositionReading(self,positionReading):
+        self.positionReading_micron = positionReading
 
+    def updateLoadCellReading(self,loadCellReading):
+        self.updateLoadCellReading = loadCellReading
 
     def run(self):
         i=1
-        # with open(filePath,'w') as self.csvFile:
-        #     csvFileWriter = csv.writer(self.csvFile)
         self.csvFileWriter.writerow(['i','POSITION','LOAD'])
-        while i<50:
-            # self.csvFileWriter.writerow([i,self.MotorThread.motorPositionReading,self.LoadCellThread.loadCellReading])
+        while i<10:
+            self.csvFileWriter.writerow([i,self.positionReading_micron,self.updateLoadCellReading])
             i+=1
             sleep(0.1)
+        self.csvFile.close()
+        self.TOGGLE_DATA_RECORDING_BUTTON.toggle()
+        print("done")
