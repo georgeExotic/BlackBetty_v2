@@ -1,11 +1,14 @@
-from time import sleep
+from time import sleep, time
+import math
+import datetime
+import os.path
 import random
 import csv
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from motor import Motor
-from LoadCell import LoadCell
-from limitSwitch import limitSwitch
+# from motor import Motor
+# from LoadCell import LoadCell
+# from limitSwitch import limitSwitch
 
 
 class LoadCellThread(QThread):
@@ -14,18 +17,19 @@ class LoadCellThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        self._connectLoadCell()
+        # self._connectLoadCell()
 
 
     def _connectLoadCell(self):
-        self.LoadCell = LoadCell()
-        self.LoadCell.connectLoadCell()
-        self.LoadCell.loadCalibrationFile()
+        # self.LoadCell = LoadCell()
+        # self.LoadCell.connectLoadCell()
+        # self.LoadCell.loadCalibrationFile()
+        pass
 
     def run(self):
         while True:
-            self.loadCellReading = self.LoadCell.readForce()
-            # self.loadCellReading = random.randint(0,50000)
+            # self.loadCellReading = self.LoadCell.read()
+            self.loadCellReading = random.randint(0,50000)
             self.loadCellReadingSignal.emit(self.loadCellReading)
             sleep(0.1)
 
@@ -36,15 +40,16 @@ class MotorThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        self._connectMotor()
+        # self._connectMotor()
 
     def _connectMotor(self):
-        self.Motor = Motor()
+        # self.Motor = Motor()
+        pass
 
     def run(self):
         while True:
-            self.motorPositionReading = self.Motor.updatePosition()
-            # self.motorPositionReading = random.randint(0,30000)
+            # self.motorPositionReading = self.Motor.updatePosition()
+            self.motorPositionReading = random.randint(0,30000)
             self.motorPositionReadingSignal.emit(self.motorPositionReading)
             sleep(0.1)
 
@@ -155,48 +160,92 @@ class limitSwitchThread(QThread):
 
 class dataRecordingThread(QThread):
 
-    def __init__(self,MotorThread,LoadCellThread,TOGGLE_DATA_RECORDING_BUTTON):
+    def __init__(self,MotorThread, LoadCellThread,
+                START_DATA_LOGGING_FILE_BUTTON, TOGGLE_DATA_RECORDING_BUTTON, CLOSE_DATA_LOGGING_FILE_BUTTON,
+                fileNameInput, DATA_LOGGING_STATUS, LAYER_NUMBER):
+
         QThread.__init__(self)
         self.MotorThread = MotorThread
         self.MotorThread.motorPositionReadingSignal.connect(self.updatePositionReading)
+
         self.LoadCellThread = LoadCellThread
         self.LoadCellThread.loadCellReadingSignal.connect(self.updateLoadCellReading)
+
+        self.START_DATA_LOGGING_FILE_BUTTON = START_DATA_LOGGING_FILE_BUTTON
+
         self.TOGGLE_DATA_RECORDING_BUTTON = TOGGLE_DATA_RECORDING_BUTTON
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(True)
+
+        self.CLOSE_DATA_LOGGING_FILE_BUTTON = CLOSE_DATA_LOGGING_FILE_BUTTON
+        self.CLOSE_DATA_LOGGING_FILE_BUTTON.setEnabled(True)
+        self.CLOSE_DATA_LOGGING_FILE_BUTTON.clicked.connect(self.closeDataLogging)
+
+        self.DATA_LOGGING_STATUS = DATA_LOGGING_STATUS
+        self.fileNameInput = fileNameInput
+        self.LAYER_NUMBER = LAYER_NUMBER
+
 
         self.positionReading_micron = 0
         self.updateLoadCellReading = 0
+        self.close = False
+        self.timeInterval = 0 
         
 
-    def updatePositionReading(self,positionReading):
-        self.positionReading_micron = positionReading
+    def updatePositionReading(self,positionReading_mm):
+        self.positionReading_mm = positionReading_mm
+        self.positionReading_micron = self.positionReading_mm * 1000
 
-    def updateLoadCellReading(self,loadCellReading):
-        self.updateLoadCellReading = loadCellReading
+    def updateLoadCellReading(self,loadCellReading_KG):
+        self.loadCellValue_KG = round(loadCellReading_KG,3)
+        self.loadCellValue_N = round(loadCellReading_KG * 9.8,3)
+        ###pressure###
+        self.pistonDiameter = 19.05
+        self.pistonRadius = self.pistonDiameter/2
+        self.pistonradius_meters = self.pistonRadius/1000
+        self.pistonArea = math.pi*math.pow(self.pistonradius_meters,2)
+        self.pressureReading_KPA = round(((self.loadCellValue_N)/(self.pistonArea)/1000),3)
+        self.pressureReading_PA = self.pressureReading_KPA/1000
+
+
+    def closeDataLogging(self):
+        self.close = True
+        self.CLOSE_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
+        self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(True)
+
 
     def openFile(self,filename):
         try:
-            self.filename = filename
-            self.csvFile = open(self.filename, 'w')
+            self.filename = filename                  
+            while os.path.exists(self.filename + '.csv'):
+                self.filename = self.filename + '_1'
+            
+            self.csvFile = open(self.filename + '.csv' , 'w')
             self.csvFileWriter = csv.writer(self.csvFile)
-            self.csvFileWriter.writerow(['SAMPLE NUMBER','POSITION','LOAD'])#units?
+            self.csvFileWriter.writerow(['TIMESTAMP','TIME[s]','LAYER NUMBER','FORCE[N]','PRESSURE[KPA]','PRESSURE[PA]','POSITION[Um]','POSITION[mm]'])
         except:
             return False
         return True
 
     def closeFile(self):
-        try:
-            self.csvFile.close()
-        except:
-            return False
-        return True
+        self.csvFile.close()
 
     def run(self):
-        i=0
-        if self.openFile('/home/pi/Desktop/BLACKBETTY RESULTS/csvTest.csv'):
-            while i<10:
-                self.csvFileWriter.writerow([i,self.positionReading_micron,self.updateLoadCellReading])
-                i+=1
-                sleep(0.1)
+        timeInterval = 0
+        if self.openFile('/tmp/csvFiles/' + self.fileNameInput):
+            
+            while not self.close:
+                while self.TOGGLE_DATA_RECORDING_BUTTON.isChecked() and self.close == False:
+                    self.csvFileWriter.writerow([datetime.datetime.now(),timeInterval,self.LAYER_NUMBER.value(),self.loadCellValue_N,self.pressureReading_KPA,self.pressureReading_PA,self.positionReading_micron,self.positionReading_mm])
+                    self.DATA_LOGGING_STATUS.setText('LOGGING')
+                    previousTime = time()
+                    sleep(0.1)
+                    timeInterval = round(timeInterval + (time() - previousTime),2)
+
+                self.DATA_LOGGING_STATUS.setText('NOT LOGGING')
+                
+        else:
+            print("SOMETHING WENT WRONG")
+
         self.closeFile()
-        self.TOGGLE_DATA_RECORDING_BUTTON.toggle()
-        print("done")
+        print("DONE")

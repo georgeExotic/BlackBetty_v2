@@ -79,14 +79,16 @@ class LoadCell():
             print("CALIBRATION PART 2 FINISHED")
 
 
-    def readForce(self):
+    def read(self):
         if self.calibrated == 1:
             force_reading_raw = self.cell.get_weight_mean(5)
             force_reading_kg = round(force_reading_raw,3)
-            # print(force_reading_kg)
+            if force_reading_kg < 0 :
+                force_reading_kg = 0 
         else:
             force_reading_kg = 0
             print('CALIBRATION FILE NOT FOUND')
+        
         return force_reading_kg
 
     def zeroCell(self):

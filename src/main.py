@@ -1,5 +1,6 @@
 import sys
 import math
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets, uic
 from threads import (LoadCellThread,
@@ -16,7 +17,10 @@ class App(QMainWindow):
 
         super(App, self).__init__(parent)
         self.gui = uic.loadUi('../GUI/blackBettyGUI.ui', self)
-        self.resize(1024,600)
+        self.resize(1002,699)
+
+        self.LayerNumber = 0
+
         self._startTHREADS()
         self.turnButtonsOFF()
 
@@ -25,12 +29,22 @@ class App(QMainWindow):
         self.HOME_BUTTON.clicked.connect(self.HOME)
         self.JUG_UP_BUTTON.clicked.connect(self.JOG_UP)
         self.JOG_DOWN_BUTTON.clicked.connect(self.JOG_DOWN)
-        self.TOGGLE_DATA_RECORDING_BUTTON.clicked.connect(self.TOGGLE_DATA_RECORDING)
+        self.RESET_LAYER_NUMBER.clicked.connect(self.resetLayerNumber)
+        self.START_DATA_LOGGING_FILE_BUTTON.clicked.connect(self.START_DATA_RECORDING)
+        self.FILE_NAME_INPUT.textChanged.connect(self.fileNameInputWorker)
+
+        self.image = QPixmap("../GUI/greenRectangle.jpg")
+        self.TOP_LIMIT_LABEL.setPixmap(self.image)
+
 
     def turnButtonsOFF(self):
         self.STOP_MOTOR_BUTTON.setEnabled(False)
         self.JUG_UP_BUTTON.setEnabled(False)
         self.JOG_DOWN_BUTTON.setEnabled(False)
+        self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
+        self.CLOSE_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+        self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+
 
     def turnButtonsON(self):
         self.STOP_MOTOR_BUTTON.setEnabled(True)
@@ -47,8 +61,8 @@ class App(QMainWindow):
         self.MotorThread.start()
         self.MotorThread.motorPositionReadingSignal.connect(self.updatePositionReading)
 
-        self.limitSwitchThread = limitSwitchThread()
-        self.limitSwitchThread.start()
+        # self.limitSwitchThread = limitSwitchThread()
+        # self.limitSwitchThread.start()
 
 
     ###BUTTON FUNCTIONS###
@@ -66,20 +80,30 @@ class App(QMainWindow):
         distance2JugUp_MICRON = self.JOG_UP_INPUT_MICRON.text()
         self.jogUpThread = jogUpThread(distance2JugUp_MICRON,self.MotorThread,self.limitSwitchThread,self.JUG_UP_BUTTON,self.JOG_DOWN_BUTTON)
         self.jogUpThread.start()
+        self.LayerNumber += 1
+        self.LAYER_NUMBER_LCD.display(self.LayerNumber)
 
     def JOG_DOWN(self):
         distance2JugDown_MICRON = self.JOG_DOWN_INPUT_MICRON.text()
         self.jogDownThread = jogDownThread(distance2JugDown_MICRON,self.MotorThread,self.limitSwitchThread,self.JOG_DOWN_BUTTON,self.JUG_UP_BUTTON)
         self.jogDownThread.start()
 
-    def TOGGLE_DATA_RECORDING(self):
-        self.dataRecordingThread = dataRecordingThread(self.MotorThread,self.LoadCellThread,self.TOGGLE_DATA_RECORDING_BUTTON)
-        if self.TOGGLE_DATA_RECORDING_BUTTON.isChecked():
-            self.dataRecordingThread.start()
+    def START_DATA_RECORDING(self):
+        self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+        self.dataRecordingThread = dataRecordingThread(self.MotorThread,
+                                                        self.LoadCellThread,
+                                                        self.START_DATA_LOGGING_FILE_BUTTON,
+                                                        self.TOGGLE_DATA_RECORDING_BUTTON,
+                                                        self.CLOSE_DATA_LOGGING_FILE_BUTTON,                                                        
+                                                        self.fileNameInput,
+                                                        self.DATA_LOGGING_STATUS,
+                                                        self.LAYER_NUMBER_LCD)
+        self.dataRecordingThread.start()
 
     
     def LOAD_CELL_CALIBRATION(self):
         pass
+
 
 
     ###WORKERS###
@@ -97,11 +121,22 @@ class App(QMainWindow):
         self.FORCE_READING_N.display(self.value_N)
         self.PRESSURE_READING_PA.display(self.pressureReading_KPA)
     
-    def updatePositionReading(self,positionReading):
-        self.positionReading_mm = round(positionReading,6)
+    def updatePositionReading(self,positionReading_mm):
+        self.positionReading_mm = round(positionReading_mm,6)
         self.positionReading_micron = self.positionReading_mm * 1000
         self.POSITION_MM.display(self.positionReading_mm)
         self.POSITION_MICRON.display(self.positionReading_micron)
+
+    def fileNameInputWorker(self,fileName):
+        if fileName:
+            self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(True)
+            self.fileNameInput = fileName
+        elif not fileName:
+            self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+
+    def resetLayerNumber(self):
+        self.LayerNumber = 0 
+        self.LAYER_NUMBER_LCD.display(self.LayerNumber)
 
 
 def main():
