@@ -17,7 +17,7 @@ class App(QMainWindow):
 
         super(App, self).__init__(parent)
         self.gui = uic.loadUi('../GUI/blackBettyGUI.ui', self)
-        self.resize(1002,699)
+        self.resize(1024,600)
 
         self.LayerNumber = 0
 
@@ -33,9 +33,10 @@ class App(QMainWindow):
         self.START_DATA_LOGGING_FILE_BUTTON.clicked.connect(self.START_DATA_RECORDING)
         self.FILE_NAME_INPUT.textChanged.connect(self.fileNameInputWorker)
 
-        self.image = QPixmap("../GUI/greenRectangle.jpg")
-        self.TOP_LIMIT_LABEL.setPixmap(self.image)
-
+        self.greenImage = QPixmap("/home/pi/BlackBetty_v2/GUI/greenImage_80x35.jpg")
+        self.greyImage = QPixmap("/home/pi/BlackBetty_v2/GUI/greyImage_80x35.jpg")
+        # self.TOP_LIMIT_LABEL.setPixmap(self.greenImage)
+        # self.BOTTOM_LIMIT_LABEL.setPixmap(self.greyImage)
 
     def turnButtonsOFF(self):
         self.STOP_MOTOR_BUTTON.setEnabled(False)
@@ -61,8 +62,10 @@ class App(QMainWindow):
         self.MotorThread.start()
         self.MotorThread.motorPositionReadingSignal.connect(self.updatePositionReading)
 
-        # self.limitSwitchThread = limitSwitchThread()
-        # self.limitSwitchThread.start()
+        self.limitSwitchThread = limitSwitchThread()
+        self.limitSwitchThread.start()
+        self.limitSwitchThread.topLimitIndicatorSignal.connect(self.updateTopLimitIndicator)
+        self.limitSwitchThread.bottomLimitIndicatorSignal.connect(self.updateBottomLimitIndicator)
 
 
     ###BUTTON FUNCTIONS###
@@ -138,6 +141,17 @@ class App(QMainWindow):
         self.LayerNumber = 0 
         self.LAYER_NUMBER_LCD.display(self.LayerNumber)
 
+    def updateTopLimitIndicator(self,state):
+        if state:
+            self.TOP_LIMIT_LABEL.setPixmap(self.greenImage)
+        else:
+            self.TOP_LIMIT_LABEL.setPixmap(self.greyImage)
+
+    def updateBottomLimitIndicator(self,state):
+        if state:
+            self.BOTTOM_LIMIT_LABEL.setPixmap(self.greenImage)
+        else:
+            self.BOTTOM_LIMIT_LABEL.setPixmap(self.greyImage)
 
 def main():
     app = QApplication(sys.argv)

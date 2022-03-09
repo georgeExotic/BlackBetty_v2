@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1002</width>
-    <height>699</height>
+    <width>1048</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -266,7 +266,7 @@
                <property name="minimumSize">
                 <size>
                  <width>100</width>
-                 <height>50</height>
+                 <height>70</height>
                 </size>
                </property>
                <property name="font">
@@ -329,13 +329,13 @@
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>35</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
               <size>
-               <width>160</width>
-               <height>0</height>
+               <width>80</width>
+               <height>35</height>
               </size>
              </property>
              <property name="font">
@@ -356,14 +356,14 @@
            <item>
             <widget class="QLabel" name="TOP_LIMIT_LABEL">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
               <size>
-               <width>50</width>
+               <width>80</width>
                <height>35</height>
               </size>
              </property>
@@ -381,6 +381,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </item>
          <item row="0" column="1">
@@ -396,7 +409,7 @@
              <property name="minimumSize">
               <size>
                <width>160</width>
-               <height>0</height>
+               <height>35</height>
               </size>
              </property>
              <property name="font">
@@ -410,12 +423,12 @@
               <string>BOTTOM LIMIT</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_11">
+            <widget class="QLabel" name="BOTTOM_LIMIT_LABEL">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
@@ -424,9 +437,18 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>50</width>
+               <width>80</width>
                <height>35</height>
               </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::WinPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>5</number>
              </property>
              <property name="text">
               <string/>
@@ -836,7 +858,7 @@
            <item>
             <widget class="QLineEdit" name="JOG_DOWN_INPUT_MICRON">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -865,7 +887,7 @@
            <item>
             <widget class="QLabel" name="label_16">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -873,7 +895,7 @@
              <property name="minimumSize">
               <size>
                <width>60</width>
-               <height>0</height>
+               <height>50</height>
               </size>
              </property>
              <property name="font">
@@ -900,7 +922,7 @@
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>100</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
@@ -938,7 +960,7 @@
              <property name="minimumSize">
               <size>
                <width>60</width>
-               <height>0</height>
+               <height>50</height>
               </size>
              </property>
              <property name="font">
@@ -961,15 +983,15 @@
          <item row="3" column="1">
           <widget class="QPushButton" name="JOG_DOWN_BUTTON">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
              <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
+             <verstretch>80</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
              <width>150</width>
-             <height>0</height>
+             <height>80</height>
             </size>
            </property>
            <property name="font">
@@ -995,7 +1017,7 @@
            <property name="minimumSize">
             <size>
              <width>150</width>
-             <height>0</height>
+             <height>80</height>
             </size>
            </property>
            <property name="font">
@@ -1013,15 +1035,15 @@
          <item row="0" column="1">
           <widget class="QPushButton" name="HOME_BUTTON">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
+             <verstretch>50</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
              <width>150</width>
-             <height>0</height>
+             <height>70</height>
             </size>
            </property>
            <property name="font">
@@ -1039,15 +1061,15 @@
          <item row="0" column="0">
           <widget class="QPushButton" name="STOP_MOTOR_BUTTON">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
+             <verstretch>50</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
              <width>300</width>
-             <height>0</height>
+             <height>70</height>
             </size>
            </property>
            <property name="font">
@@ -1100,7 +1122,7 @@
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>50</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">
@@ -1181,7 +1203,7 @@
          <item row="1" column="1">
           <widget class="QPushButton" name="TOGGLE_DATA_RECORDING_BUTTON">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -1189,7 +1211,7 @@
            <property name="minimumSize">
             <size>
              <width>150</width>
-             <height>100</height>
+             <height>80</height>
             </size>
            </property>
            <property name="font">
@@ -1212,7 +1234,7 @@
            <item>
             <widget class="QPushButton" name="START_DATA_LOGGING_FILE_BUTTON">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1220,7 +1242,7 @@
              <property name="minimumSize">
               <size>
                <width>150</width>
-               <height>100</height>
+               <height>50</height>
               </size>
              </property>
              <property name="font">
@@ -1241,7 +1263,7 @@
            <item>
             <widget class="QPushButton" name="CLOSE_DATA_LOGGING_FILE_BUTTON">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1249,7 +1271,7 @@
              <property name="minimumSize">
               <size>
                <width>150</width>
-               <height>100</height>
+               <height>50</height>
               </size>
              </property>
              <property name="font">

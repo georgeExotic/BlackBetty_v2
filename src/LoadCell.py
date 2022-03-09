@@ -109,7 +109,7 @@ if __name__ == "__main__":
     end_time = time.time() + 5
 
     while (time.time() < end_time):
-        LC.readForce()
+        LC.read()
         time.sleep(0.1)
 
     user_input = input("input = ")
@@ -127,6 +127,6 @@ if __name__ == "__main__":
 
 
     while True:
-        LC.readForce()
+        LC.read()
         time.sleep(0.1)
         
