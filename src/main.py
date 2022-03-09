@@ -45,6 +45,7 @@ class App(QMainWindow):
         self.TOGGLE_DATA_RECORDING_BUTTON.setEnabled(False)
         self.CLOSE_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
         self.START_DATA_LOGGING_FILE_BUTTON.setEnabled(False)
+        self.LOAD_CELL_CALIBRATION_BUTTON.setEnabled(False)
 
 
     def turnButtonsON(self):

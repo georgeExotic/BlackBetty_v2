@@ -28,7 +28,7 @@ class LoadCellThread(QThread):
 
     def run(self):
         while True:
-            self.loadCellReading = self.LoadCell.read()
+            self.loadCellReading = self.LoadCell.readLoadCell()
             # self.loadCellReading = random.randint(0,50000)
             self.loadCellReadingSignal.emit(self.loadCellReading)
             sleep(0.1)

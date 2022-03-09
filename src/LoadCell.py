@@ -79,7 +79,7 @@ class LoadCell():
             print("CALIBRATION PART 2 FINISHED")
 
 
-    def read(self):
+    def readLoadCell(self):
         if self.calibrated == 1:
             force_reading_raw = self.cell.get_weight_mean(5)
             force_reading_kg = round(force_reading_raw,3)
@@ -104,12 +104,13 @@ class LoadCell():
 
 if __name__ == "__main__":
     LC = LoadCell()
+    LC.connectLoadCell()
     LC.loadCalibrationFile()
 
     end_time = time.time() + 5
 
     while (time.time() < end_time):
-        LC.read()
+        LC.readLoadCell()
         time.sleep(0.1)
 
     user_input = input("input = ")
@@ -127,6 +128,6 @@ if __name__ == "__main__":
 
 
     while True:
-        LC.read()
+        LC.readLoadCell()
         time.sleep(0.1)
         
